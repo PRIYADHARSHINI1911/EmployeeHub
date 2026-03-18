@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Services Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .status-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .status-card h3 {
+            color: #667eea;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.online {
+            background-color: #4caf50;
+            box-shadow: 0 0 10px #4caf50;
+        }
+
+        .status-indicator.offline {
+            background-color: #f44336;
+            box-shadow: 0 0 10px #f44336;
+        }
+
+        .status-text {
+            font-size: 0.85em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-bottom: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 0.95em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .output-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .output-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .output-content {
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #333;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .data-table thead {
+            background: #f0f0f0;
+        }
+
+        .data-table th {
+            padding: 12px;
+            text-align: left;
+            color: #667eea;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .data-table button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .list-section {
+            margin-top: 20px;
+        }
+
+        .list-item {
+            background: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item-content {
+            flex: 1;
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .list-item button {
+            padding: 6px 10px;
+            font-size: 0.8em;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f0f0f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Employee Services Dashboard</h1>
+            <p>Microservices Testing & Management Platform</p>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-card">
+                <h3>Employee Service</h3>
+                <div id="employeeStatus">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Checking...</span>
+                </div>
+                <small>Port: 8091</small>
+            </div>
+            <div class="status-card">
+                <h3>Department Service</h3>
+                <div id="departmentStatus">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Checking...</span>
+                </div>
+                <small>Port: 8090</small>
+            </div>
+            <div class="status-card">
+                <h3>Cloud Gateway</h3>
+                <div id="gatewayStatus">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Checking...</span>
+                </div>
+                <small>Port: 8092</small>
+            </div>
+            <div class="status-card">
+                <h3>Config Server</h3>
+                <div id="configStatus">
+                    <span class="status-indicator offline"></span>
+                    <span class="status-text">Checking...</span>
+                </div>
+                <small>Port: 8093</small>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- EMPLOYEE SERVICE PANEL -->
+            <div class="panel">
+                <div class="panel-header">👨‍💼 Employee Management</div>
+                <div class="panel-body">
+                    <div id="employeeAlert" class="alert"></div>
+
+                    <div class="tabs">
+                        <button class="tab-button active" onclick="switchTab('employee', 'create')">Create</button>
+                        <button class="tab-button" onclick="switchTab('employee', 'view')">View All</button>
+                        <button class="tab-button" onclick="switchTab('employee', 'update')">Update</button>
+                        <button class="tab-button" onclick="switchTab('employee', 'delete')">Delete</button>
+                    </div>
+
+                    <!-- CREATE TAB -->
+                    <div id="employee-create" class="tab-content active">
+                        <div class="form-group">
+                            <label>Employee Name</label>
+                            <input type="text" id="empName" placeholder="Enter employee name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="empEmail" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label>Department ID</label>
+                            <input type="number" id="empDeptId" placeholder="Enter department ID">
+                        </div>
+                        <div class="form-group">
+                            <label>Salary</label>
+                            <input type="number" id="empSalary" placeholder="Enter salary" step="0.01">
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-primary" onclick="createEmployee()">Create Employee</button>
+                            <button class="btn-secondary" onclick="clearEmployeeForm()">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- VIEW ALL TAB -->
+                    <div id="employee-view" class="tab-content">
+                        <button class="btn-primary" onclick="getAllEmployees()" style="width: 100%; margin-bottom: 15px;">Fetch All Employees</button>
+                        <div id="employeeList" class="list-section"></div>
+                    </div>
+
+                    <!-- UPDATE TAB -->
+                    <div id="employee-update" class="tab-content">
+                        <div class="form-group">
+                            <label>Employee ID</label>
+                            <input type="number" id="empUpdateId" placeholder="Enter employee ID to update">
+                        </div>
+                        <div class="form-group">
+                            <label>New Name</label>
+                            <input type="text" id="empUpdateName" placeholder="Enter new name">
+                        </div>
+                        <div class="form-group">
+                            <label>New Email</label>
+                            <input type="email" id="empUpdateEmail" placeholder="Enter new email">
+                        </div>
+                        <div class="form-group">
+                            <label>New Salary</label>
+                            <input type="number" id="empUpdateSalary" placeholder="Enter new salary" step="0.01">
+                        </div>
+                        <button class="btn-primary" onclick="updateEmployee()" style="width: 100%;">Update Employee</button>
+                    </div>
+
+                    <!-- DELETE TAB -->
+                    <div id="employee-delete" class="tab-content">
+                        <div class="form-group">
+                            <label>Employee ID to Delete</label>
+                            <input type="number" id="empDeleteId" placeholder="Enter employee ID">
+                        </div>
+                        <button class="btn-danger" onclick="deleteEmployee()" style="width: 100%;">Delete Employee</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-title">Response Output:</div>
+                        <div class="output-content" id="employeeOutput">Ready for operations...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEPARTMENT SERVICE PANEL -->
+            <div class="panel">
+                <div class="panel-header">🏢 Department Management</div>
+                <div class="panel-body">
+                    <div id="departmentAlert" class="alert"></div>
+
+                    <div class="tabs">
+                        <button class="tab-button active" onclick="switchTab('department', 'create')">Create</button>
+                        <button class="tab-button" onclick="switchTab('department', 'view')">View All</button>
+                        <button class="tab-button" onclick="switchTab('department', 'update')">Update</button>
+                        <button class="tab-button" onclick="switchTab('department', 'delete')">Delete</button>
+                    </div>
+
+                    <!-- CREATE TAB -->
+                    <div id="department-create" class="tab-content active">
+                        <div class="form-group">
+                            <label>Department Name</label>
+                            <input type="text" id="deptName" placeholder="Enter department name">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="deptLocation" placeholder="Enter location">
+                        </div>
+                        <div class="form-group">
+                            <label>Manager Name</label>
+                            <input type="text" id="deptManager" placeholder="Enter manager name">
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-primary" onclick="createDepartment()">Create Department</button>
+                            <button class="btn-secondary" onclick="clearDepartmentForm()">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- VIEW ALL TAB -->
+                    <div id="department-view" class="tab-content">
+                        <button class="btn-primary" onclick="getAllDepartments()" style="width: 100%; margin-bottom: 15px;">Fetch All Departments</button>
+                        <div id="departmentList" class="list-section"></div>
+                    </div>
+
+                    <!-- UPDATE TAB -->
+                    <div id="department-update" class="tab-content">
+                        <div class="form-group">
+                            <label>Department ID</label>
+                            <input type="number" id="deptUpdateId" placeholder="Enter department ID to update">
+                        </div>
+                        <div class="form-group">
+                            <label>New Name</label>
+                            <input type="text" id="deptUpdateName" placeholder="Enter new name">
+                        </div>
+                        <div class="form-group">
+                            <label>New Location</label>
+                            <input type="text" id="deptUpdateLocation" placeholder="Enter new location">
+                        </div>
+                        <button class="btn-primary" onclick="updateDepartment()" style="width: 100%;">Update Department</button>
+                    </div>
+
+                    <!-- DELETE TAB -->
+                    <div id="department-delete" class="tab-content">
+                        <div class="form-group">
+                            <label>Department ID to Delete</label>
+                            <input type="number" id="deptDeleteId" placeholder="Enter department ID">
+                        </div>
+                        <button class="btn-danger" onclick="deleteDepartment()" style="width: 100%;">Delete Department</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-title">Response Output:</div>
+                        <div class="output-content" id="departmentOutput">Ready for operations...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API SETTINGS PANEL -->
+        <div class="panel">
+            <div class="panel-header">⚙️ API Configuration</div>
+            <div class="panel-body">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1em;">Base URLs</h3>
+                        <div class="form-group">
+                            <label>Employee Service Base URL</label>
+                            <input type="text" id="empBaseUrl" value="http://localhost:8091/api/employee" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Department Service Base URL</label>
+                            <input type="text" id="deptBaseUrl" value="http://localhost:8090/api/department" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Gateway Base URL (Optional)</label>
+                            <input type="text" id="gatewayBaseUrl" placeholder="http://localhost:8092" value="http://localhost:8092">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1em;">Options</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="useGateway"> Use API Gateway for requests
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Request Timeout (ms)</label>
+                            <input type="number" id="requestTimeout" value="5000" min="1000" step="1000">
+                        </div>
+                        <button class="btn-success" onclick="testAllConnections()" style="width: 100%; margin-top: 10px;">Test All Connections</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_CONFIG = {
+            employeeBase: 'http://localhost:8091/api/employee',
+            departmentBase: 'http://localhost:8090/api/department',
+            gateway: 'http://localhost:8092',
+            timeout: 5000
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkServiceStatus();
+            setInterval(checkServiceStatus, 30000); // Check every 30 seconds
+        });
+
+        // Update API Config from UI
+        function updateApiConfig() {
+            const useGateway = document.getElementById('useGateway').checked;
+            const timeout = parseInt(document.getElementById('requestTimeout').value);
+            const gatewayUrl = document.getElementById('gatewayBaseUrl').value;
+
+            API_CONFIG.timeout = timeout;
+
+            if (useGateway && gatewayUrl) {
+                API_CONFIG.employeeBase = gatewayUrl + '/api/employee';
+                API_CONFIG.departmentBase = gatewayUrl + '/api/department';
+            } else {
+                API_CONFIG.employeeBase = document.getElementById('empBaseUrl').value;
+                API_CONFIG.departmentBase = document.getElementById('deptBaseUrl').value;
+            }
+        }
+
+        // Tab switching
+        function switchTab(service, tab) {
+            const prefix = service === 'employee' ? 'employee' : 'department';
+            
+            // Hide all tabs for this service
+            document.querySelectorAll(`[id^="${prefix}-"]`).forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons in this section
+            const panel = service === 'employee' ? 
+                document.querySelectorAll('.panel')[0] : 
+                document.querySelectorAll('.panel')[1];
+            panel.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab and mark button as active
+            const tabElement = document.getElementById(`${prefix}-${tab}`);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+            
+            event.target.classList.add('active');
+        }
+
+        // Utility Functions
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            setTimeout(() => {
+                alert.classList.remove('success', 'error', 'info');
+            }, 5000);
+        }
+
+        function formatJson(obj) {
+            return JSON.stringify(obj, null, 2);
+        }
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return await response.json();
+                }
+                return response;
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        }
+
+        function setLoading(elementId, isLoading) {
+            const element = document.getElementById(elementId);
+            if (isLoading) {
+                element.innerHTML = '<div class="loading"></div> Loading...';
+            }
+        }
+
+        // Service Status Check
+        async function checkServiceStatus() {
+            const services = [
+                { id: 'employeeStatus', url: API_CONFIG.employeeBase, name: 'Employee' },
+                { id: 'departmentStatus', url: API_CONFIG.departmentBase, name: 'Department' },
+                { id: 'gatewayStatus', url: API_CONFIG.gateway + '/actuator/health', name: 'Gateway' },
+                { id: 'configStatus', url: 'http://localhost:8093/actuator/health', name: 'Config' }
+            ];
+
+            for (const service of services) {
+                try {
+                    const response = await fetch(service.url, { method: 'GET', signal: AbortSignal.timeout(3000) });
+                    const statusDiv = document.getElementById(service.id);
+                    if (statusDiv) {
+                        if (response.ok) {
+                            statusDiv.innerHTML = `<span class="status-indicator online"></span><span class="status-text">Online</span>`;
+                        } else {
+                            statusDiv.innerHTML = `<span class="status-indicator offline"></span><span class="status-text">Offline</span>`;
+                        }
+                    }
+                } catch (error) {
+                    const statusDiv = document.getElementById(service.id);
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `<span class="status-indicator offline"></span><span class="status-text">Offline</span>`;
+                    }
+                }
+            }
+        }
+
+        async function testAllConnections() {
+            updateApiConfig();
+            showAlert('employeeAlert', 'Testing connections...', 'info');
+            await checkServiceStatus();
+            setTimeout(() => {
+                showAlert('employeeAlert', 'Connection test completed', 'success');
+            }, 1000);
+        }
+
+        // EMPLOYEE OPERATIONS
+        async function createEmployee() {
+            updateApiConfig();
+            const emp = {
+                name: document.getElementById('empName').value,
+                email: document.getElementById('empEmail').value,
+                departmentId: parseInt(document.getElementById('empDeptId').value),
+                salary: parseFloat(document.getElementById('empSalary').value)
+            };
+
+            if (!emp.name || !emp.email) {
+                showAlert('employeeAlert', 'Please fill in required fields', 'error');
+                return;
+            }
+
+            try {
+                setLoading('employeeOutput', true);
+                const result = await makeRequest(API_CONFIG.employeeBase, {
+                    method: 'POST',
+                    body: JSON.stringify(emp)
+                });
+                document.getElementById('employeeOutput').textContent = formatJson(result);
+                showAlert('employeeAlert', 'Employee created successfully!', 'success');
+                clearEmployeeForm();
+            } catch (error) {
+                document.getElementById('employeeOutput').textContent = `Error: ${error.message}`;
+                showAlert('employeeAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getAllEmployees() {
+            updateApiConfig();
+            try {
+                setLoading('employeeOutput', true);
+                const result = await makeRequest(API_CONFIG.employeeBase);
+                document.getElementById('employeeOutput').textContent = formatJson(result);
+                
+                const list = document.getElementById('employeeList');
+                list.innerHTML = '';
+                
+                if (Array.isArray(result)) {
+                    result.forEach(emp => {
+                        const item = document.createElement('div');
+                        item.className = 'list-item';
+                        item.innerHTML = `
+                            <div class="list-item-content">
+                                <strong>${emp.name}</strong> <br>
+                                <small>Email: ${emp.email} | Salary: $${emp.salary || 'N/A'}</small>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn-secondary" onclick="loadEmployeeForUpdate(${emp.id}, '${emp.name}', '${emp.email}', ${emp.salary})">Edit</button>
+                                <button class="btn-danger" onclick="confirmDelete('employee', ${emp.id})">Delete</button>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    });
+                }
+                showAlert('employeeAlert', `Loaded ${Array.isArray(result) ? result.length : 1} employee(s)`, 'success');
+            } catch (error) {
+                document.getElementById('employeeOutput').textContent = `Error: ${error.message}`;
+                showAlert('employeeAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateEmployee() {
+            updateApiConfig();
+            const id = document.getElementById('empUpdateId').value;
+            const emp = {
+                name: document.getElementById('empUpdateName').value,
+                email: document.getElementById('empUpdateEmail').value,
+                salary: parseFloat(document.getElementById('empUpdateSalary').value)
+            };
+
+            if (!id || (!emp.name && !emp.email && !emp.salary)) {
+                showAlert('employeeAlert', 'Please provide ID and at least one field to update', 'error');
+                return;
+            }
+
+            try {
+                setLoading('employeeOutput', true);
+                const result = await makeRequest(`${API_CONFIG.employeeBase}/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(emp)
+                });
+                document.getElementById('employeeOutput').textContent = formatJson(result);
+                showAlert('employeeAlert', 'Employee updated successfully!', 'success');
+                document.getElementById('empUpdateId').value = '';
+                document.getElementById('empUpdateName').value = '';
+                document.getElementById('empUpdateEmail').value = '';
+                document.getElementById('empUpdateSalary').value = '';
+            } catch (error) {
+                document.getElementById('employeeOutput').textContent = `Error: ${error.message}`;
+                showAlert('employeeAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteEmployee() {
+            updateApiConfig();
+            const id = document.getElementById('empDeleteId').value;
+            if (!id) {
+                showAlert('employeeAlert', 'Please enter Employee ID', 'error');
+                return;
+            }
+
+            try {
+                setLoading('employeeOutput', true);
+                await makeRequest(`${API_CONFIG.employeeBase}/${id}`, { method: 'DELETE' });
+                document.getElementById('employeeOutput').textContent = 'Employee deleted successfully!';
+                showAlert('employeeAlert', 'Employee deleted!', 'success');
+                document.getElementById('empDeleteId').value = '';
+            } catch (error) {
+                document.getElementById('employeeOutput').textContent = `Error: ${error.message}`;
+                showAlert('employeeAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function loadEmployeeForUpdate(id, name, email, salary) {
+            document.getElementById('empUpdateId').value = id;
+            document.getElementById('empUpdateName').value = name;
+            document.getElementById('empUpdateEmail').value = email;
+            document.getElementById('empUpdateSalary').value = salary;
+            switchTab('employee', 'update');
+        }
+
+        function clearEmployeeForm() {
+            document.getElementById('empName').value = '';
+            document.getElementById('empEmail').value = '';
+            document.getElementById('empDeptId').value = '';
+            document.getElementById('empSalary').value = '';
+        }
+
+        // DEPARTMENT OPERATIONS
+        async function createDepartment() {
+            updateApiConfig();
+            const dept = {
+                name: document.getElementById('deptName').value,
+                location: document.getElementById('deptLocation').value,
+                manager: document.getElementById('deptManager').value
+            };
+
+            if (!dept.name) {
+                showAlert('departmentAlert', 'Please fill in required fields', 'error');
+                return;
+            }
+
+            try {
+                setLoading('departmentOutput', true);
+                const result = await makeRequest(API_CONFIG.departmentBase, {
+                    method: 'POST',
+                    body: JSON.stringify(dept)
+                });
+                document.getElementById('departmentOutput').textContent = formatJson(result);
+                showAlert('departmentAlert', 'Department created successfully!', 'success');
+                clearDepartmentForm();
+            } catch (error) {
+                document.getElementById('departmentOutput').textContent = `Error: ${error.message}`;
+                showAlert('departmentAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getAllDepartments() {
+            updateApiConfig();
+            try {
+                setLoading('departmentOutput', true);
+                const result = await makeRequest(API_CONFIG.departmentBase);
+                document.getElementById('departmentOutput').textContent = formatJson(result);
+                
+                const list = document.getElementById('departmentList');
+                list.innerHTML = '';
+                
+                if (Array.isArray(result)) {
+                    result.forEach(dept => {
+                        const item = document.createElement('div');
+                        item.className = 'list-item';
+                        item.innerHTML = `
+                            <div class="list-item-content">
+                                <strong>${dept.name}</strong> <br>
+                                <small>Location: ${dept.location || 'N/A'} | Manager: ${dept.manager || 'N/A'}</small>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn-secondary" onclick="loadDepartmentForUpdate(${dept.id}, '${dept.name}', '${dept.location}')">Edit</button>
+                                <button class="btn-danger" onclick="confirmDelete('department', ${dept.id})">Delete</button>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    });
+                }
+                showAlert('departmentAlert', `Loaded ${Array.isArray(result) ? result.length : 1} department(s)`, 'success');
+            } catch (error) {
+                document.getElementById('departmentOutput').textContent = `Error: ${error.message}`;
+                showAlert('departmentAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateDepartment() {
+            updateApiConfig();
+            const id = document.getElementById('deptUpdateId').value;
+            const dept = {
+                name: document.getElementById('deptUpdateName').value,
+                location: document.getElementById('deptUpdateLocation').value
+            };
+
+            if (!id || (!dept.name && !dept.location)) {
+                showAlert('departmentAlert', 'Please provide ID and at least one field to update', 'error');
+                return;
+            }
+
+            try {
+                setLoading('departmentOutput', true);
+                const result = await makeRequest(`${API_CONFIG.departmentBase}/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(dept)
+                });
+                document.getElementById('departmentOutput').textContent = formatJson(result);
+                showAlert('departmentAlert', 'Department updated successfully!', 'success');
+                document.getElementById('deptUpdateId').value = '';
+                document.getElementById('deptUpdateName').value = '';
+                document.getElementById('deptUpdateLocation').value = '';
+            } catch (error) {
+                document.getElementById('departmentOutput').textContent = `Error: ${error.message}`;
+                showAlert('departmentAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteDepartment() {
+            updateApiConfig();
+            const id = document.getElementById('deptDeleteId').value;
+            if (!id) {
+                showAlert('departmentAlert', 'Please enter Department ID', 'error');
+                return;
+            }
+
+            try {
+                setLoading('departmentOutput', true);
+                await makeRequest(`${API_CONFIG.departmentBase}/${id}`, { method: 'DELETE' });
+                document.getElementById('departmentOutput').textContent = 'Department deleted successfully!';
+                showAlert('departmentAlert', 'Department deleted!', 'success');
+                document.getElementById('deptDeleteId').value = '';
+            } catch (error) {
+                document.getElementById('departmentOutput').textContent = `Error: ${error.message}`;
+                showAlert('departmentAlert', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function loadDepartmentForUpdate(id, name, location) {
+            document.getElementById('deptUpdateId').value = id;
+            document.getElementById('deptUpdateName').value = name;
+            document.getElementById('deptUpdateLocation').value = location;
+            switchTab('department', 'update');
+        }
+
+        function clearDepartmentForm() {
+            document.getElementById('deptName').value = '';
+            document.getElementById('deptLocation').value = '';
+            document.getElementById('deptManager').value = '';
+        }
+
+        function confirmDelete(type, id) {
+            if (confirm(`Are you sure you want to delete this ${type}?`)) {
+                if (type === 'employee') {
+                    document.getElementById('empDeleteId').value = id;
+                    deleteEmployee();
+                } else {
+                    document.getElementById('deptDeleteId').value = id;
+                    deleteDepartment();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

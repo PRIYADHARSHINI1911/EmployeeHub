@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+  # Eureka Service Registry
+  eureka-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.eureka
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_APPLICATION_NAME=eureka-service
+      - SERVER_PORT=8761
+    networks:
+      - microservices-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Department Service
+  department-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.department
+    container_name: department-service
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_APPLICATION_NAME=department-service
+      - SERVER_PORT=8090
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-service:8761/eureka
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_INSTANCE_HOSTNAME=department-service
+    networks:
+      - microservices-net
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Employee Service
+  employee-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.employee
+    container_name: employee-service
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_APPLICATION_NAME=employee-service
+      - SERVER_PORT=8091
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-service:8761/eureka
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_INSTANCE_HOSTNAME=employee-service
+    networks:
+      - microservices-net
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Config Server
+  config-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.config
+    container_name: config-server
+    ports:
+      - "8093:8093"
+    environment:
+      - SPRING_APPLICATION_NAME=config-server
+      - SERVER_PORT=8093
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-service:8761/eureka
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_INSTANCE_HOSTNAME=config-server
+    networks:
+      - microservices-net
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8093/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Cloud Gateway
+  cloud-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    container_name: cloud-gateway
+    ports:
+      - "8092:8092"
+    environment:
+      - SPRING_APPLICATION_NAME=cloud-gateway
+      - SERVER_PORT=8092
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-service:8761/eureka
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_INSTANCE_HOSTNAME=cloud-gateway
+    networks:
+      - microservices-net
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8092/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  microservices-net:
+    driver: bridge
